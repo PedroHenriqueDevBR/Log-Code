@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:get/instance_manager.dart';
+import 'package:novo_teste/app/modules/home/components/item_list_widget.dart';
 import 'package:novo_teste/app/modules/home/controllers/home_controller.dart';
-import 'package:novo_teste/app/modules/home/models/todo_listview_controller.dart';
 
-class HomePage extends GetView {
+class HomePage extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -15,14 +15,24 @@ class HomePage extends GetView {
           IconButton(onPressed: () {}, icon: const Icon(Icons.delete)),
         ],
       ),
-      body: Column(
-        children: [
-          form(),
-          Expanded(
-            child: todoList(),
-          ),
-        ],
-      ),
+      body: Obx(() {
+        return Column(
+          children: [
+            form(),
+            Expanded(
+              child: Column(
+                children: [
+                  ...controller.todos
+                      .map(
+                        (e) => ItemListWidget(todoController: e),
+                      )
+                      .toList(),
+                ],
+              ),
+            ),
+          ],
+        );
+      }),
     );
   }
 
@@ -56,9 +66,7 @@ class HomePage extends GetView {
               child: ElevatedButton(
                 onPressed: () {
                   if (controller.formKey.currentState!.validate()) {
-                    controller.formKey.currentState!.save();
                     controller.saveText();
-                    controller.formKey.currentState!.reset();
                   }
                 },
                 child: const Text('Salvar'),
@@ -66,36 +74,6 @@ class HomePage extends GetView {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget todoList() {
-    HomeController controller = Get.put(HomeController());
-    return Obx(
-      () => ListView.separated(
-        separatorBuilder: (_, __) => const Divider(),
-        itemCount: controller.todos.length,
-        itemBuilder: (ctx, index) {
-          TodoListViewController todoView = controller.todos[index];
-          return ListTile(
-            leading: Checkbox(
-              value: todoView.selected,
-              onChanged: (bool? value) {
-                todoView.selected = !todoView.selected;
-                // O Erro está aqui
-                // Quando o checkbox é clicado o valor não é atualizado
-                controller.refresh();
-              },
-            ),
-            title: Text(
-              todoView.todo.text,
-              style: TextStyle(
-                decoration: todoView.todo.done ? TextDecoration.lineThrough : TextDecoration.none,
-              ),
-            ),
-          );
-        },
       ),
     );
   }

@@ -1,7 +1,8 @@
+import 'package:get/state_manager.dart';
 import 'package:novo_teste/app/data/models/todo_model.dart';
 
-class TodoListViewController {
+class TodoListViewController extends GetxController {
   TodoModel todo;
-  var selected = false;
+  final selected = false.obs;
   TodoListViewController({required this.todo});
 }
