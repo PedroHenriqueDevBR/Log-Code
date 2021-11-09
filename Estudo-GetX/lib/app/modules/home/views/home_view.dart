@@ -1,18 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:get/instance_manager.dart';
+import 'package:novo_teste/app/data/providers/hive_service.dart';
+import 'package:novo_teste/app/data/stores/todo_store.dart';
 import 'package:novo_teste/app/modules/home/components/item_list_widget.dart';
 import 'package:novo_teste/app/modules/home/controllers/home_controller.dart';
 
 class HomePage extends GetView<HomeController> {
+  HomeController homeController = Get.put(HomeController(
+    todoStoreService: TodoStoreService(
+      HiveService(),
+    ),
+  ));
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('GetX'),
         actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.done)),
-          IconButton(onPressed: () {}, icon: const Icon(Icons.delete)),
+          IconButton(onPressed: homeController.removeSelectedToDos, icon: const Icon(Icons.delete)),
         ],
       ),
       body: Obx(() {
@@ -37,7 +44,11 @@ class HomePage extends GetView<HomeController> {
   }
 
   Widget form() {
-    HomeController controller = Get.put(HomeController());
+    HomeController controller = Get.put(HomeController(
+      todoStoreService: TodoStoreService(
+        HiveService(),
+      ),
+    ));
     return Container(
       padding: const EdgeInsets.all(16.0),
       child: Form(

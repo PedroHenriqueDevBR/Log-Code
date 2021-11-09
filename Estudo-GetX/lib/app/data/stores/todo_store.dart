@@ -1,28 +1,47 @@
 import 'package:get/get_state_manager/get_state_manager.dart';
+import 'package:hive/hive.dart';
 import 'package:novo_teste/app/data/models/todo_model.dart';
 import 'package:novo_teste/app/data/providers/hive_service.dart';
 
-class TodoStore extends GetxController {
+class TodoStoreService extends GetxController {
   final HiveService hiveService;
   final TODO = 'todo';
+  late Box box;
 
-  TodoStore(this.hiveService);
+  TodoStoreService(this.hiveService);
 
-  Future<void> initHive() async {
-    await hiveService.initHive();
+  _startHive() async {
+    box = await Hive.openBox(TODO);
   }
 
   Future<void> saveTodo(TodoModel todo) async {
-    List<TodoModel> todos = await hiveService.getData(TODO) as List<TodoModel>;
+    List<TodoModel> todos = await getTodos();
+    List<dynamic> data = [];
     todos.add(todo);
-    hiveService.saveData(TODO, todos);
+    for (TodoModel todo in todos) {
+      data.add(todo.toJson());
+    }
+    hiveService.saveData(TODO, data);
   }
 
-  Future<List<TodoModel>> getTodos() async => await hiveService.getData(TODO) as List<TodoModel>;
+  Future<List<TodoModel>> getTodos() async {
+    List<TodoModel> result = [];
+    dynamic response = await hiveService.getData(TODO);
+    if (response != null) {
+      for (Map item in response) {
+        result.add(TodoModel(text: item['text'], done: item['done']));
+      }
+    }
+    return result;
+  }
 
   Future<void> removeTodo(TodoModel todo) async {
     List<TodoModel> todos = await getTodos();
-    todos.remove(todo);
-    hiveService.updateData(TODO, todos);
+    List<dynamic> data = [];
+    todos.removeWhere((element) => element.text == todo.text);
+    for (TodoModel todo in todos) {
+      data.add(todo.toJson());
+    }
+    hiveService.saveData(TODO, data);
   }
 }
