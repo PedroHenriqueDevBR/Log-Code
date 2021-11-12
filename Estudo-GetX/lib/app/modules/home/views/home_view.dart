@@ -27,14 +27,16 @@ class HomePage extends GetView<HomeController> {
           children: [
             form(),
             Expanded(
-              child: Column(
-                children: [
-                  ...controller.todos
-                      .map(
-                        (e) => ItemListWidget(todoController: e),
-                      )
-                      .toList(),
-                ],
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    ...controller.todos
+                        .map(
+                          (e) => ItemListWidget(todoController: e),
+                        )
+                        .toList(),
+                  ],
+                ),
               ),
             ),
           ],
@@ -56,20 +58,18 @@ class HomePage extends GetView<HomeController> {
         child: Column(
           children: [
             TextFormField(
-              decoration: const InputDecoration(
-                label: Text('No que você está pensando?'),
-                hintText: 'Digite algo',
-              ),
+              controller: controller.txtText,
               autocorrect: true,
               autovalidateMode: AutovalidateMode.onUserInteraction,
-              onSaved: (newValue) {
-                controller.setText(newValue);
-              },
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Digite algo para salvar';
                 }
               },
+              decoration: const InputDecoration(
+                label: Text('No que você está pensando?'),
+                hintText: 'Digite algo',
+              ),
             ),
             const SizedBox(height: 8.0),
             SizedBox(

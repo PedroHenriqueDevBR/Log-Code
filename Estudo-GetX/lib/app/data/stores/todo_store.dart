@@ -44,4 +44,18 @@ class TodoStoreService extends GetxController {
     }
     hiveService.saveData(TODO, data);
   }
+
+  Future<void> removeTodoList(List<TodoModel> todosDelete) async {
+    List<TodoModel> todos = await getTodos();
+    List<dynamic> data = [];
+
+    todosDelete.forEach((todoDelete) {
+      todos.removeWhere((e) => e.text == todoDelete.text);
+    });
+
+    for (TodoModel todo in todos) {
+      data.add(todo.toJson());
+    }
+    hiveService.saveData(TODO, data);
+  }
 }

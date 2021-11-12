@@ -9,9 +9,7 @@ class HomeController extends GetxController {
   GlobalKey<FormState> formKey = new GlobalKey<FormState>();
   RxList<TodoListViewController> todos = RxList<TodoListViewController>();
 
-  final _text = ''.obs;
-  get text => _text.value;
-  void setText(value) => _text.value = value;
+  TextEditingController txtText = TextEditingController(text: '');
   TodoStoreService todoStoreService;
 
   HomeController({
@@ -31,6 +29,7 @@ class HomeController extends GetxController {
 
   void saveText() {
     formKey.currentState!.save();
+    final text = txtText.text;
     TodoModel todo = TodoModel(text: text);
     todos.add(TodoListViewController(todo: todo));
     todoStoreService.saveTodo(todo);
@@ -38,9 +37,7 @@ class HomeController extends GetxController {
   }
 
   void removeSelectedToDos() async {
-    final selecteds = todos.where((element) => element.selected.value == true);
-    for (TodoListViewController selected in selecteds) {
-      await todoStoreService.removeTodo(selected.todo).then((_) => loadTodos());
-    }
+    final selecteds = todos.where((element) => element.selected.value == true).toList();
+    await todoStoreService.removeTodoList(selecteds.map((e) => e.todo).toList()).then((_) => loadTodos());
   }
 }
