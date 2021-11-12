@@ -21,7 +21,7 @@ class ItemListWidget extends StatelessWidget {
               value: todoController.selected.value,
               onChanged: (value) => todoController.selected.value = value!,
             ),
-            Expanded(child: Text(todoController.todo.text)),
+            Expanded(child: Text(todoController.todo.text, style: TextStyle(decoration: todoController.todo.done ? TextDecoration.lineThrough : null),)),
           ],
         ),
       ),

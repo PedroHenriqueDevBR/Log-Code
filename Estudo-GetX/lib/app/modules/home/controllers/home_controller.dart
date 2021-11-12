@@ -40,4 +40,13 @@ class HomeController extends GetxController {
     final selecteds = todos.where((element) => element.selected.value == true).toList();
     await todoStoreService.removeTodoList(selecteds.map((e) => e.todo).toList()).then((_) => loadTodos());
   }
+
+  void editSelectedToDos() async {
+    final selecteds = todos.where((element) => element.selected.value == true).toList();
+    for (TodoListViewController todoController in selecteds) {
+      todoController.todo.done = !todoController.todo.done;
+    }
+    await todoStoreService.editTodoList(selecteds.map((e) => e.todo).toList());
+    loadTodos();
+  }
 }

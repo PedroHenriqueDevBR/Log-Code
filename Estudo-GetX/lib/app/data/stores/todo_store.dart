@@ -58,4 +58,19 @@ class TodoStoreService extends GetxController {
     }
     hiveService.saveData(TODO, data);
   }
+
+  Future<void> editTodoList(List<TodoModel> todosUpdate) async {
+    List<TodoModel> todos = await getTodos();
+    List<dynamic> data = [];
+
+    todosUpdate.forEach((todoUpdate) {
+      int index = todos.indexWhere((e) => e.text == todoUpdate.text);
+      todos[index].done = todoUpdate.done;
+    });
+
+    for (TodoModel todo in todos) {
+      data.add(todo.toJson());
+    }
+    hiveService.saveData(TODO, data);
+  }
 }

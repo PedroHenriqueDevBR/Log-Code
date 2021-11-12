@@ -19,6 +19,7 @@ class HomePage extends GetView<HomeController> {
       appBar: AppBar(
         title: const Text('GetX'),
         actions: [
+          IconButton(onPressed: homeController.editSelectedToDos, icon: const Icon(Icons.edit)),
           IconButton(onPressed: homeController.removeSelectedToDos, icon: const Icon(Icons.delete)),
         ],
       ),
@@ -29,13 +30,7 @@ class HomePage extends GetView<HomeController> {
             Expanded(
               child: SingleChildScrollView(
                 child: Column(
-                  children: [
-                    ...controller.todos
-                        .map(
-                          (e) => ItemListWidget(todoController: e),
-                        )
-                        .toList(),
-                  ],
+                  children: [...controller.todos.map((e) => ItemListWidget(todoController: e)).toList()],
                 ),
               ),
             ),
