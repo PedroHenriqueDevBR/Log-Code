@@ -1,0 +1,5 @@
+# Note
+
+querySnapshot.hitsPerPage: 20 # Quantidade por página
+querySnapshot.nbHits: 400 # Total de objetos encontrados
+querySnapshot.nbPages: 20 # Número de páginas
